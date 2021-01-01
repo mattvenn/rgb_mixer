@@ -15,10 +15,10 @@ module top (
     `endif
 
     wire a_db, b_db;
-    debounce #(.hist_len(4)) debounce_a(.clk(clk), .reset(reset), .button(a), .debounced(a_db));
-    debounce #(.hist_len(4)) debounce_b(.clk(clk), .reset(reset), .button(b), .debounced(b_db));
+    debounce #(.hist_len(8)) debounce_a(.clk(clk), .reset(reset), .button(a), .debounced(a_db));
+    debounce #(.hist_len(8)) debounce_b(.clk(clk), .reset(reset), .button(b), .debounced(b_db));
 
-    wire [15:0] pot;
-    encoder #(.width(8)) encoder_inst(.clk(clk), .reset(reset), .a(a_db), .b(b_db), .value(pot));
+    wire [7:0] encoder;
+    encoder #(.width(8)) encoder_inst(.clk(clk), .reset(reset), .a(a_db), .b(b_db), .value(encoder));
 
 endmodule
