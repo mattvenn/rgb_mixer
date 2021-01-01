@@ -6,8 +6,25 @@ PERIOD = 10
 
 class Encoder():
 
-    CYCLE_A = [1, 1, 0, 0]
-    CYCLE_B = [0, 1, 1, 0]
+    CYCLE = [
+               1, 0, 1, 1,
+               1, 1, 1, 1,
+               1, 1, 1, 1,
+               1, 1, 0, 1,
+               1, 0, 1, 0,
+               0, 0, 0, 0,
+               0, 0, 0, 0,
+               0, 0, 0, 1,
+               1, 0, 1, 0,
+               1, 1, 1, 1,
+               1, 1, 1, 1,
+               1, 1, 1, 0,
+               1, 1, 1, 0,
+               0, 0, 0, 0,
+               0, 0, 0, 0,
+               0, 0, 1, 0,
+               ]
+    AB_PHASE = 8
 
     def __init__(self, dut):
         self.dut = dut
@@ -15,27 +32,12 @@ class Encoder():
         self.dut.b <= 0
         self.cycle = 0
 
-    def update(self, incr):
+    async def update(self, incr):
         self.cycle += incr 
-        if self.cycle > 3:
-            self.cycle = 0
-        if self.cycle < 0:
-            self.cycle = 3
 
-        self.dut.a <= Encoder.CYCLE_A[self.cycle]
-        self.dut.b <= Encoder.CYCLE_B[self.cycle]
-
-    async def increment(self):
-        self.update(1)
-        await ClockCycles(self.dut.clk, 5)
-        self.update(1)
-        await ClockCycles(self.dut.clk, 5)
-
-    async def decrement(self):
-        self.update(-1)
-        await ClockCycles(self.dut.clk, 5)
-        self.update(-1)
-        await ClockCycles(self.dut.clk, 5)
+        await ClockCycles(self.dut.clk, 1)
+        self.dut.a <= Encoder.CYCLE[self.cycle % len(Encoder.CYCLE)]
+        self.dut.b <= Encoder.CYCLE[(self.cycle - Encoder.AB_PHASE) % len(Encoder.CYCLE)]
 
 @cocotb.test()
 async def test(dut):
@@ -47,5 +49,7 @@ async def test(dut):
     dut.reset <= 0;
     await ClockCycles(dut.clk, 5)
 
-    for i in range(5):
-        await encoder.increment()
+    for i in range(2 * len(Encoder.CYCLE)):
+        await encoder.update(1)
+    for i in range(2 * len(Encoder.CYCLE)):
+        await encoder.update(-1)
