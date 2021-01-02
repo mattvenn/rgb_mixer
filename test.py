@@ -8,58 +8,81 @@ PERIOD = 10
 class Encoder():
 
     CYCLE = [ 1, 1, 0, 0 ]
-    AB_PHASE = 1
-    NOISE_CYCLES = 5 # number of cycles at the edges of transitions vulnerable to bouncing
-    NOISE_CHANCE = 0.5 # % chance of a bounce within the edges
 
-    def __init__(self, dut):
+    # number of cycles at the edges of transitions vulnerable to bouncing
+    # % chance of a bounce within the edges
+    def __init__(self, dut, clocks_per_phase = 20, noise_cycles = 5, noise_chance = 0.5):
         self.dut = dut
         self.cycle = 0
+        self.clocks_per_phase = clocks_per_phase
+        self.noise_chance = noise_chance
+        self.noise_cycles = noise_cycles
+        self.a_phase = 3
+        self.b_phase = 2
+        self.last_a_phase = 3
+        self.last_b_phase = 2
+        self.a_edge = 0
+        self.b_edge = 0
 
-    async def update(self, incr = 1, clocks = 20):
-        self.cycle += incr 
-        a_phase = self.cycle % len(Encoder.CYCLE)
-        b_phase = (self.cycle - Encoder.AB_PHASE) % len(Encoder.CYCLE)
+    def set_clocks_per_phase(self, clocks_per_phase):
+        self.clocks_per_phase = clocks_per_phase
 
-        for i in range(clocks):
-            self.dut.a <= Encoder.CYCLE[a_phase]
-            self.dut.b <= Encoder.CYCLE[b_phase]
+    async def update(self, incr = 1):
+        await ClockCycles(self.dut.clk, 1)
+        self.cycle += 1 
+        if self.cycle % self.clocks_per_phase == 0:
+            #advance a phase
+            self.a_phase = (self.a_phase + incr) % len(Encoder.CYCLE)
+            self.b_phase = (self.b_phase + incr) % len(Encoder.CYCLE)
 
-            # noise at edges
-            if a_phase == 0 and i < Encoder.NOISE_CYCLES and random.random() < Encoder.NOISE_CHANCE:
-                self.dut.a <= random.randint(0, 1)
-            if a_phase == 1 and i > (clocks - Encoder.NOISE_CYCLES) and random.random() < Encoder.NOISE_CHANCE:
-                self.dut.a <= random.randint(0, 1)
+            if Encoder.CYCLE[self.a_phase] != Encoder.CYCLE[self.last_a_phase]:
+                self.a_edge = self.cycle
+            
+            if Encoder.CYCLE[self.b_phase] != Encoder.CYCLE[self.last_b_phase]:
+                self.b_edge = self.cycle 
 
-            if b_phase == 1 and i < Encoder.NOISE_CYCLES and random.random() < Encoder.NOISE_CHANCE:
-                self.dut.b <= random.randint(0, 1)
-            if b_phase == 2 and i > (clocks - Encoder.NOISE_CYCLES) and random.random() < Encoder.NOISE_CHANCE:
-                self.dut.b <= random.randint(0, 1)
+            self.last_a_phase = self.a_phase
+            self.last_b_phase = self.b_phase
 
-            await ClockCycles(self.dut.clk, 1)
+        self.dut.a <= Encoder.CYCLE[self.a_phase]
+        self.dut.b <= Encoder.CYCLE[self.b_phase]
+
+        # noise at edges
+        if (self.cycle - self.a_edge) < self.noise_cycles and random.random() < self.noise_chance:
+            self.dut.a <= random.randint(0, 1)
+        if (self.cycle - self.b_edge) < self.noise_cycles and random.random() < self.noise_chance:
+            self.dut.b <= random.randint(0, 1)
+
 
 @cocotb.test()
 async def test(dut):
     clock = Clock(dut.clk, 10, units="us")
-    encoder = Encoder(dut)
+    encoder = Encoder(dut, clocks_per_phase = 20, noise_cycles = 5)
     cocotb.fork(clock.start())
 
-    dut.a <= 1
+    dut.a <= 0
     dut.b <= 0
     dut.reset <= 1;
+
     await ClockCycles(dut.clk, 5)
     dut.reset <= 0;
     await ClockCycles(dut.clk, 5)
     assert dut.encoder == 0
 
-    for i in range(10):
+    for j in range(200):
+        print(j)
 
-        for i in range(100):
-            await encoder.update(1, random.randint(20, 40))
+        for i in range(2000):
+            await encoder.update(1)
 
-        assert dut.encoder == 51
+        await ClockCycles(dut.clk, 20)
+        
+        assert(dut.encoder == 50)
 
-        for i in range(100):
-            await encoder.update(-1, random.randint(20, 40))
+        for i in range(2000):
+            await encoder.update(-1)
 
-        assert dut.encoder == 1
+        await ClockCycles(dut.clk, 20)
+
+        assert(dut.encoder == 0)
+
