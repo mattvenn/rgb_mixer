@@ -31,10 +31,11 @@ class Encoder():
         await ClockCycles(self.dut.clk, 1)
         self.cycle += 1 
         if self.cycle % self.clocks_per_phase == 0:
-            #advance a phase
+            # advance a phase
             self.a_phase = (self.a_phase + incr) % len(Encoder.CYCLE)
             self.b_phase = (self.b_phase + incr) % len(Encoder.CYCLE)
 
+            # if a transition just happened, make a note of where we are for triggering noisy edges
             if Encoder.CYCLE[self.a_phase] != Encoder.CYCLE[self.last_a_phase]:
                 self.a_edge = self.cycle
             
@@ -44,10 +45,11 @@ class Encoder():
             self.last_a_phase = self.a_phase
             self.last_b_phase = self.b_phase
 
+        # set encoder inputs
         self.dut.a <= Encoder.CYCLE[self.a_phase]
         self.dut.b <= Encoder.CYCLE[self.b_phase]
 
-        # noise at edges
+        # randomly generate noise at edges
         if (self.cycle - self.a_edge) < self.noise_cycles and random.random() < self.noise_chance:
             self.dut.a <= random.randint(0, 1)
         if (self.cycle - self.b_edge) < self.noise_cycles and random.random() < self.noise_chance:
@@ -72,19 +74,23 @@ async def test_encoder(dut):
     await reset(dut)
     assert dut.encoder == 0
 
-    # up
+    # count up
     for i in range(clocks_per_phase * 2 *  255):
         await encoder.update(1)
 
-    await ClockCycles(dut.clk, 20)
+    # let noisy transition finish, otherwise can get an extra count
+    for i in range(10):
+        await encoder.update(0)
     
     assert(dut.encoder == 255)
 
-    # down
+    # count down
     for i in range(clocks_per_phase * 2 * 255):
         await encoder.update(-1)
 
-    await ClockCycles(dut.clk, 20)
+    # let noisy transition finish
+    for i in range(10):
+        await encoder.update(0)
 
     assert(dut.encoder == 0)
 
