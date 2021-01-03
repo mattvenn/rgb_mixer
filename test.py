@@ -53,36 +53,62 @@ class Encoder():
         if (self.cycle - self.b_edge) < self.noise_cycles and random.random() < self.noise_chance:
             self.dut.b <= random.randint(0, 1)
 
-
-@cocotb.test()
-async def test(dut):
-    clock = Clock(dut.clk, 10, units="us")
-    encoder = Encoder(dut, clocks_per_phase = 20, noise_cycles = 5)
-    cocotb.fork(clock.start())
-
+async def reset(dut):
     dut.a <= 0
     dut.b <= 0
-    dut.reset <= 1;
+    dut.reset <= 1
 
     await ClockCycles(dut.clk, 5)
     dut.reset <= 0;
     await ClockCycles(dut.clk, 5)
+
+@cocotb.test()
+async def test_encoder(dut):
+    clock = Clock(dut.clk, 10, units="us")
+    clocks_per_phase = 10
+    encoder = Encoder(dut, clocks_per_phase = clocks_per_phase, noise_cycles = clocks_per_phase / 4)
+    cocotb.fork(clock.start())
+
+    await reset(dut)
     assert dut.encoder == 0
 
-    for j in range(200):
-        print(j)
+    # up
+    for i in range(clocks_per_phase * 2 *  255):
+        await encoder.update(1)
 
-        for i in range(2000):
-            await encoder.update(1)
+    await ClockCycles(dut.clk, 20)
+    
+    assert(dut.encoder == 255)
 
-        await ClockCycles(dut.clk, 20)
-        
-        assert(dut.encoder == 50)
+    # down
+    for i in range(clocks_per_phase * 2 * 255):
+        await encoder.update(-1)
 
-        for i in range(2000):
-            await encoder.update(-1)
+    await ClockCycles(dut.clk, 20)
 
-        await ClockCycles(dut.clk, 20)
+    assert(dut.encoder == 0)
 
-        assert(dut.encoder == 0)
+@cocotb.test()
+async def test_pwm(dut):
+    clock = Clock(dut.clk, 10, units="us")
+    cocotb.fork(clock.start())
+    
+    # test a range of values
+    for i in range(10, 255, 20):
+        await reset(dut)
+        # set pwm to this level
+        dut.pwm_inst.level <= i
 
+        # synchronise to pwm out going high
+        await RisingEdge(dut.pwm_out)
+        # wait pwm level clock steps
+        await ClockCycles(dut.clk, i)
+
+        # assert still high
+        assert(dut.pwm_out)
+
+        # wait for next rising clk edge
+        await RisingEdge(dut.clk)
+
+        # assert pwm goes low
+        assert(dut.pwm_out == 0)
