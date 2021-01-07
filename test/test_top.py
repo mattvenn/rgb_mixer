@@ -32,6 +32,11 @@ async def test_all(dut):
     assert dut.enc1 == 0
     assert dut.enc2 == 0
 
+    # pwm should all be low at start
+    assert dut.pwm0_out == 0
+    assert dut.pwm1_out == 0
+    assert dut.pwm1_out == 0
+
     # do 3 ramps for each encoder
     for encoder, dut_enc in zip([encoder0, encoder1, encoder2], [dut.enc0, dut.enc1, dut.enc2]):
         # count up encoder 0
@@ -43,3 +48,12 @@ async def test_all(dut):
             await encoder.update(0)
         
         assert(dut_enc == 255)
+
+    # sync to pwm
+    await RisingEdge(dut.pwm0_out)
+    # pwm should all be max at the end (high for 254 cycles)
+    for i in range(255): 
+        assert dut.pwm0_out == 1
+        assert dut.pwm1_out == 1
+        assert dut.pwm1_out == 1
+        await ClockCycles(dut.clk, 1)
