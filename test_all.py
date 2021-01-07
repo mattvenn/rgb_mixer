@@ -3,8 +3,6 @@ from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles
 import random
 
-PERIOD = 10
-
 class Encoder():
 
     CYCLE = [ 1, 1, 0, 0 ]

@@ -22,6 +22,6 @@ module top (
     wire [7:0] encoder;
     encoder #(.width(8)) encoder_inst(.clk(clk), .reset(reset), .a(a_db), .b(b_db), .value(encoder));
 
-    pwm #(.width(8)) pwm_inst(.clk(clk), .reset(reset), .pwm(pwm_out), .level(encoder));
+    pwm #(.width(8)) pwm_inst(.clk(clk), .reset(reset), .out(pwm_out), .level(encoder));
 
 endmodule
