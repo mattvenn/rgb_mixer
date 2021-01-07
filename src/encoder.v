@@ -10,28 +10,35 @@ module encoder #(
     output reg [WIDTH-1:0] value
 );
 
-    reg oa;
-    reg ob;
+    reg old_a;
+    reg old_b;
+
+    reg [2:0] state;
 
     always @(posedge clk or posedge reset) begin
         if(reset) begin
 
-            oa <= 0;
-            ob <= 0;
+            old_a <= 0;
+            old_b <= 0;
             value <= 0;
+            state <= 0;
 
         end else begin
 
-            oa <= a;
-            ob <= b;
+            // last values
+            old_a <= a;
+            old_b <= b;
 
-            if(a != oa || b != ob )
-                case ({a,oa,b,ob})
-                    4'b1000: value <= value + INCREMENT;
-                    4'b0111: value <= value + INCREMENT;
-                    4'b0010: value <= value - INCREMENT;
-                    4'b1101: value <= value - INCREMENT;
-                endcase 
+            // state machine
+            case ({a,old_a,b,old_b})
+
+                4'b1000: value <= value + INCREMENT;
+                4'b0111: value <= value + INCREMENT;
+
+                4'b0010: value <= value - INCREMENT;
+                4'b1101: value <= value - INCREMENT;
+
+            endcase 
         end
     end
 
