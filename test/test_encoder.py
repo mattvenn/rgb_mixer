@@ -9,8 +9,13 @@ class Encoder():
 
     # number of cycles at the edges of transitions vulnerable to bouncing
     # % chance of a bounce within the edges
-    def __init__(self, dut, clocks_per_phase = 20, noise_cycles = 5, noise_chance = 0.5):
-        self.dut = dut
+    def __init__(self, clk, a, b, clocks_per_phase = 20, noise_cycles = 5, noise_chance = 0.5):
+        # inputs
+        self.clk = clk
+        self.a = a
+        self.b = b
+
+        # internals
         self.cycle = 0
         self.clocks_per_phase = clocks_per_phase
         self.noise_chance = noise_chance
@@ -26,7 +31,7 @@ class Encoder():
         self.clocks_per_phase = clocks_per_phase
 
     async def update(self, incr = 1):
-        await ClockCycles(self.dut.clk, 1)
+        await ClockCycles(self.clk, 1)
         self.cycle += 1 
         if self.cycle % self.clocks_per_phase == 0:
             # advance a phase
@@ -44,14 +49,14 @@ class Encoder():
             self.last_b_phase = self.b_phase
 
         # set encoder inputs
-        self.dut.a <= Encoder.CYCLE[self.a_phase]
-        self.dut.b <= Encoder.CYCLE[self.b_phase]
+        self.a <= Encoder.CYCLE[self.a_phase]
+        self.b <= Encoder.CYCLE[self.b_phase]
 
         # randomly generate noise at edges
         if (self.cycle - self.a_edge) < self.noise_cycles and random.random() < self.noise_chance:
-            self.dut.a <= random.randint(0, 1)
+            self.a <= random.randint(0, 1)
         if (self.cycle - self.b_edge) < self.noise_cycles and random.random() < self.noise_chance:
-            self.dut.b <= random.randint(0, 1)
+            self.b <= random.randint(0, 1)
 
 async def reset(dut):
     dut.a <= 0
@@ -66,7 +71,7 @@ async def reset(dut):
 async def test_encoder(dut):
     clock = Clock(dut.clk, 10, units="us")
     clocks_per_phase = 10
-    encoder = Encoder(dut, clocks_per_phase = clocks_per_phase, noise_cycles = clocks_per_phase / 4)
+    encoder = Encoder(dut.clk, dut.a, dut.b, clocks_per_phase = clocks_per_phase, noise_cycles = clocks_per_phase / 4)
     cocotb.fork(clock.start())
 
     await reset(dut)
