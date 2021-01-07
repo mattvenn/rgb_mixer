@@ -5,8 +5,8 @@ all: test_encoder test_debounce test_pwm
 test_encoder:
 	rm -rf sim_build/
 	mkdir sim_build/
-	iverilog -o sim_build/sim.vvp -s top -s dump -g2012 src/pwm.v src/dump_top.v src/top.v src/encoder.v src/debounce.v
-	MODULE=test.test_all vvp -M $$(cocotb-config --prefix)/cocotb/libs -m libcocotbvpi_icarus sim_build/sim.vvp
+	iverilog -o sim_build/sim.vvp -s test_encoder -s dump -g2012 src/dump_encoder.v src/test_encoder.v src/encoder.v src/debounce.v
+	MODULE=test.test_encoder vvp -M $$(cocotb-config --prefix)/cocotb/libs -m libcocotbvpi_icarus sim_build/sim.vvp
 
 test_pwm:
 	rm -rf sim_build/
