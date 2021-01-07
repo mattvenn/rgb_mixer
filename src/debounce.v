@@ -11,7 +11,7 @@ module debounce #(
     localparam on_value = 2 ** HIST_LEN - 1;
     reg [HIST_LEN-1:0] button_hist;
 
-    always@(posedge clk or posedge reset) begin
+    always @(posedge clk or posedge reset) begin
         if(reset) begin
 
             button_hist <= 0;
