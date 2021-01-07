@@ -10,18 +10,10 @@ module pwm #(
     input wire [WIDTH-1:0] level
     );
 
-    `ifdef COCOTB_SIM
-        initial begin
-            $dumpfile ("pwm.vcd");
-            $dumpvars (0, pwm);
-            #1;
-        end
-    `endif
-
     reg [WIDTH-1:0] count;
     wire pwm_on = count < level;
 
-    always @(posedge clk) begin
+    always @(posedge clk or posedge reset) begin
         if(reset) 
             count <= 0;
         else

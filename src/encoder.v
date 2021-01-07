@@ -13,7 +13,7 @@ module encoder #(
     reg oa;
     reg ob;
 
-    always @(posedge clk) begin
+    always @(posedge clk or posedge reset) begin
         if(reset) begin
 
             oa <= 0;

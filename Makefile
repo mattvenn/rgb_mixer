@@ -40,3 +40,29 @@ show_debounce:
 
 clean:
 	rm -rf *vcd sim_build
+
+PROJECT = encoder_pwm
+SOURCES= src/top.v src/encoder.v src/debounce.v src/pwm.v
+ICEBREAKER_DEVICE = up5k
+ICEBREAKER_PIN_DEF = icebreaker.pcf
+ICEBREAKER_PACKAGE = sg48
+SEED = 1
+
+all: $(PROJECT).bin
+
+%.json: $(SOURCES)
+	yosys -l yosys.log -p 'synth_ice40 -top top -json $(PROJECT).json' $(SOURCES)
+
+%.asc: %.json $(ICEBREAKER_PIN_DEF) 
+	nextpnr-ice40 -l nextpnr.log --seed $(SEED) --freq 20 --package $(ICEBREAKER_PACKAGE) --$(ICEBREAKER_DEVICE) --asc $@ --pcf $(ICEBREAKER_PIN_DEF) --json $<
+
+%.bin: %.asc
+	icepack $< $@
+
+prog: $(PROJECT).bin
+	iceprog $<
+
+#clean:
+#	rm -f ${PROJECT}.json ${PROJECT}.asc ${PROJECT}.bin *log
+
+.PHONY: clean
