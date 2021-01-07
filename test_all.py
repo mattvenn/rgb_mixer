@@ -91,28 +91,3 @@ async def test_encoder(dut):
         await encoder.update(0)
 
     assert(dut.encoder == 0)
-
-@cocotb.test()
-async def test_pwm(dut):
-    clock = Clock(dut.clk, 10, units="us")
-    cocotb.fork(clock.start())
-    
-    # test a range of values
-    for i in range(10, 255, 20):
-        await reset(dut)
-        # set pwm to this level
-        dut.pwm_inst.level <= i
-
-        # synchronise to pwm out going high
-        await RisingEdge(dut.pwm_out)
-        # wait pwm level clock steps
-        await ClockCycles(dut.clk, i)
-
-        # assert still high
-        assert(dut.pwm_out)
-
-        # wait for next rising clk edge
-        await RisingEdge(dut.clk)
-
-        # assert pwm goes low
-        assert(dut.pwm_out == 0)

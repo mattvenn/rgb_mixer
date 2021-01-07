@@ -1,0 +1,26 @@
+[*]
+[*] GTKWave Analyzer v3.3.108 (w)1999-2020 BSI
+[*] Thu Jan  7 12:14:05 2021
+[*]
+[dumpfile] "/home/matt/work/asic-workshop/project2.1/debounce.vcd"
+[dumpfile_mtime] "Thu Jan  7 12:13:39 2021"
+[dumpfile_size] 553
+[savefile] "/home/matt/work/asic-workshop/project2.1/debounce.gtkw"
+[timestart] 0
+[size] 1490 738
+[pos] -1 -1
+*-17.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 272
+[signals_width] 318
+[sst_expanded] 1
+[sst_vpaned_height] 194
+@28
+debounce.clk
+debounce.reset
+debounce.debounced
+@22
+debounce.button_hist[7:0]
+@29
+debounce.button
+[pattern_trace] 1
+[pattern_trace] 0

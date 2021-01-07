@@ -1,4 +1,5 @@
 `default_nettype none
+`timescale 1ns/1ns
 module top (
     input clk,
     input reset,
@@ -6,14 +7,6 @@ module top (
     input b,
     output pwm_out
 );
-
-    `ifdef COCOTB_SIM
-        initial begin
-            $dumpfile ("top.vcd");
-            $dumpvars (0, top);
-            #1;
-        end
-    `endif
 
     wire a_db, b_db;
     debounce #(.hist_len(8)) debounce_a(.clk(clk), .reset(reset), .button(a), .debounced(a_db));
