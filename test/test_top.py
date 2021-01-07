@@ -40,7 +40,7 @@ async def test_all(dut):
     assert dut.pwm1_out == 0
 
     # do 3 ramps for each encoder up to a smaller amount as the test with clock divider is much slower
-    max_count = 10
+    max_count = 5
     for encoder, dut_enc in zip([encoder0, encoder1, encoder2], [dut.enc0, dut.enc1, dut.enc2]):
         for i in range(clocks_per_phase * 2 * max_count * CLOCK_DIV):
             await encoder.update(1)
