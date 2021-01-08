@@ -4,7 +4,7 @@ from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles
 import random
 from test.test_encoder import Encoder
 
-CLOCK_DIV = 128
+CLOCK_DIV = 256
 
 async def reset(dut):
     dut.enc0_a <= 0

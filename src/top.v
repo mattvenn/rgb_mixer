@@ -20,8 +20,8 @@ module top (
     wire enc2_a_db, enc2_b_db;
     wire [7:0] enc0, enc1, enc2;
 
-    reg [6:0] clk_div = 0; // this initialisation won't happen for ASIC
-    wire clk = clk_div[6]; // divide 12M down to around 100k with a 7 bit reg
+    reg [7:0] clk_div = 0; // this initialisation won't happen for ASIC
+    wire clk = clk_div[7]; // divide 12M down to around 50k with an 8 bit reg
     always @(posedge clk12)
         clk_div <= clk_div + 1;
 
