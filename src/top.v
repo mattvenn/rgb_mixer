@@ -22,7 +22,7 @@ module top (
 
     reg [6:0] clk_div = 0; // this initialisation won't happen for ASIC
     wire clk = clk_div[6]; // divide 12M down to around 50k with a 7 bit reg
-    always @(posedge clk12 or posedge reset)
+    always @(posedge clk12)
         clk_div <= clk_div + 1;
 
     // debouncers, 2 for each encoder
