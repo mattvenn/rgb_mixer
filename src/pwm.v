@@ -13,7 +13,7 @@ module pwm #(
     reg [WIDTH-1:0] count;
     wire pwm_on = count < level;
 
-    always @(posedge clk or posedge reset) begin
+    always @(posedge clk) begin
         if(reset) 
             count <= 0;
         else

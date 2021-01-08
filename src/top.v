@@ -20,14 +20,10 @@ module top (
     wire enc2_a_db, enc2_b_db;
     wire [7:0] enc0, enc1, enc2;
 
-    // divide 12M down to around 50k with a 7 bit reg
-    reg [6:0] clk_div;
-    wire clk = clk_div[6];
+    reg [6:0] clk_div = 0; // this initialisation won't happen for ASIC
+    wire clk = clk_div[6]; // divide 12M down to around 50k with a 7 bit reg
     always @(posedge clk12 or posedge reset)
-        if(reset)
-            clk_div = 0;
-        else 
-            clk_div <= clk_div + 1;
+        clk_div <= clk_div + 1;
 
     // debouncers, 2 for each encoder
     debounce #(.HIST_LEN(8)) debounce0_a(.clk(clk), .reset(reset), .button(enc0_a), .debounced(enc0_a_db));

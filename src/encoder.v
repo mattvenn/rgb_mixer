@@ -15,7 +15,7 @@ module encoder #(
 
     reg [2:0] state;
 
-    always @(posedge clk or posedge reset) begin
+    always @(posedge clk) begin
         if(reset) begin
 
             old_a <= 0;
