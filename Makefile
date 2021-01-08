@@ -1,11 +1,3 @@
-# FPGA variables
-PROJECT = fpga/encoder_pwm
-SOURCES= src/top.v src/encoder.v src/debounce.v src/pwm.v
-ICEBREAKER_DEVICE = up5k
-ICEBREAKER_PIN_DEF = fpga/icebreaker.pcf
-ICEBREAKER_PACKAGE = sg48
-SEED = 1
-
 # COCOTB variables
 export COCOTB_REDUCED_LOG_FMT=1
 
@@ -49,24 +41,8 @@ test_debounce:
 show_debounce:
 	gtkwave debounce.vcd debounce.gtkw
 
-
-# FPGA recipes
-
-%.json: $(SOURCES)
-	yosys -l fpga/yosys.log -p 'synth_ice40 -top top -json $(PROJECT).json' $(SOURCES)
-
-%.asc: %.json $(ICEBREAKER_PIN_DEF) 
-	nextpnr-ice40 -l fpga/nextpnr.log --seed $(SEED) --freq 20 --package $(ICEBREAKER_PACKAGE) --$(ICEBREAKER_DEVICE) --asc $@ --pcf $(ICEBREAKER_PIN_DEF) --json $<
-
-%.bin: %.asc
-	icepack $< $@
-
-prog: $(PROJECT).bin
-	iceprog $<
-
 # general recipes
 
 clean:
 	rm -rf *vcd sim_build fpga/*log fpga/*bin test/__pycache__
 
-.PHONY: clean
