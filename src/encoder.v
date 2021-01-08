@@ -14,15 +14,12 @@ module encoder #(
     reg old_a;
     reg old_b;
 
-    reg [2:0] state;
-
     always @(posedge clk) begin
         if(reset) begin
 
             old_a <= 0;
             old_b <= 0;
             value <= 0;
-            state <= 0;
 
         end else begin
 
