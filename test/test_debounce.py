@@ -16,8 +16,8 @@ class BouncingSwitch():
         # finally set to what it should be
         self.dut.button <= value
 
-        # wait 8 clock cycles (default history length in debounce.v) + 1 for register
-        await ClockCycles(self.dut.clk, 9)
+        # wait 8 clock cycles (default history length in debounce.v) + 2 for registers
+        await ClockCycles(self.dut.clk, 10)
 
 async def reset(dut):
     dut.reset <= 1

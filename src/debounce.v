@@ -14,17 +14,18 @@ module debounce #(
     always @(posedge clk) begin
         if(reset) begin
 
-            button_hist <= HIST_LEN'b0;
+            button_hist <= 0;
             debounced <= 1'b0;
 
         end else begin
 
-            button_hist = {button_hist[HIST_LEN-2:0], button };
+            button_hist <= {button_hist[HIST_LEN-2:0], button};
 
             if(button_hist == on_value) 
-               debounced <= 1'b1;
-            else if(button_hist == 0)
-               debounced <= 1'b0;
+                debounced <= 1'b1;
+
+            else if(button_hist == 8'b0)
+                debounced <= 1'b0;
        end
     end
 
