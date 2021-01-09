@@ -23,7 +23,7 @@ module top (
     reg [7:0] clk_div = 0; // this initialisation won't happen for ASIC
     wire clk = clk_div[7]; // divide 12M down to around 50k with an 8 bit reg
     always @(posedge clk12)
-        clk_div <= clk_div + 1;
+        clk_div <= clk_div + 1'b1;
 
     // debouncers, 2 for each encoder
     debounce #(.HIST_LEN(8)) debounce0_a(.clk(clk), .reset(reset), .button(enc0_a), .debounced(enc0_a_db));
