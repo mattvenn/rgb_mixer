@@ -59,6 +59,9 @@ prog: $(PROJECT).bin
 
 # general recipes
 
+lint:
+	verible-verilog-lint src/*v --rules_config verible.rules
+
 clean:
 	rm -rf *vcd sim_build fpga/*log fpga/*bin test/__pycache__
 
