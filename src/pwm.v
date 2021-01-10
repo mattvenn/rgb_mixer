@@ -14,7 +14,7 @@ module pwm #(
     wire pwm_on = count < level;
 
     always @(posedge clk) begin
-        if(reset) 
+        if(reset)
             count <= 1'b0;
         else
             count <= count + 1'b1;

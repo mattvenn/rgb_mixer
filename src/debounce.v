@@ -21,7 +21,7 @@ module debounce #(
 
             button_hist <= {button_hist[HIST_LEN-2:0], button};
 
-            if(button_hist == on_value) 
+            if(button_hist == on_value)
                 debounced <= 1'b1;
 
             else if(button_hist == 8'b0)

@@ -2,7 +2,7 @@
 `timescale 1ns/1ns
 module encoder #(
     parameter WIDTH = 4,
-    parameter INCREMENT = 1
+    parameter INCREMENT = 1'b1
 )(
     input clk,
     input reset,
@@ -36,7 +36,8 @@ module encoder #(
                 4'b0010: value <= value - INCREMENT;
                 4'b1101: value <= value - INCREMENT;
 
-            endcase 
+                default: value <= value;
+            endcase
         end
     end
 
