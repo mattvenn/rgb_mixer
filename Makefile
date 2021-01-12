@@ -22,7 +22,7 @@ test_top:
 test_encoder:
 	rm -rf sim_build/
 	mkdir sim_build/
-	iverilog -o sim_build/sim.vvp -s test_encoder -s dump -g2012 test/dump_encoder.v test/test_encoder.v src/encoder.v src/debounce.v
+	iverilog -o sim_build/sim.vvp -s encoder -s dump -g2012 test/dump_encoder.v src/encoder.v
 	MODULE=test.test_encoder vvp -M $$(cocotb-config --prefix)/cocotb/libs -m libcocotbvpi_icarus sim_build/sim.vvp
 
 test_pwm:

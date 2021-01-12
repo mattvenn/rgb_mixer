@@ -19,7 +19,7 @@ async def reset(dut):
 
 @cocotb.test()
 async def test_all(dut):
-    clock = Clock(dut.clk, 80, units="ns")
+    clock = Clock(dut.clk, 10, units="us")
     clocks_per_phase = 10
     encoder0 = Encoder(dut.clk, dut.enc0_a, dut.enc0_b, clocks_per_phase = clocks_per_phase, noise_cycles = clocks_per_phase / 4)
     encoder1 = Encoder(dut.clk, dut.enc1_a, dut.enc1_b, clocks_per_phase = clocks_per_phase, noise_cycles = clocks_per_phase / 4)
@@ -38,7 +38,7 @@ async def test_all(dut):
     assert dut.pwm1_out == 0
 
     # do 3 ramps for each encoder up to a smaller amount as the test with clock divider is much slower
-    max_count = 5
+    max_count = 255
     for encoder, dut_enc in zip([encoder0, encoder1, encoder2], [dut.enc0, dut.enc1, dut.enc2]):
         for i in range(clocks_per_phase * 2 * max_count):
             await encoder.update(1)
