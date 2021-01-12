@@ -1,7 +1,7 @@
 `default_nettype none
 `timescale 1ns/1ns
 module top (
-    input clk12,
+    input clk,
     input reset_n,
     input enc0_a,
     input enc0_b,
@@ -19,11 +19,6 @@ module top (
     wire enc1_a_db, enc1_b_db;
     wire enc2_a_db, enc2_b_db;
     wire [7:0] enc0, enc1, enc2;
-
-    reg [7:0] clk_div = 0; // this initialisation won't happen for ASIC
-    wire clk = clk_div[7]; // divide 12M down to around 50k with an 8 bit reg
-    always @(posedge clk12)
-        clk_div <= clk_div + 1'b1;
 
     // debouncers, 2 for each encoder
     debounce #(.HIST_LEN(8)) debounce0_a(.clk(clk), .reset(reset), .button(enc0_a), .debounced(enc0_a_db));
