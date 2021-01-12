@@ -44,8 +44,8 @@ set_io -nowarn P1A9       46
 set_io -nowarn P1A10      44
 
 # leds on PMOD 1b
-set_io -nowarn pwm0_out   27 # this on led 1
-#set_io -nowarn pwm0_out   43
+#set_io -nowarn pwm0_out   27 # this on led 1
+set_io -nowarn pwm0_out   43
 set_io -nowarn pwm1_out   38
 set_io -nowarn pwm2_out   34
 
