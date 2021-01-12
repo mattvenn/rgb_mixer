@@ -9,7 +9,7 @@ SEED = 1
 # COCOTB variables
 export COCOTB_REDUCED_LOG_FMT=1
 
-all: test_encoder test_debounce test_pwm test_top $(PROJECT).bin
+all: test_encoder test_debounce test_pwm test_top
 
 # test recipes
 
