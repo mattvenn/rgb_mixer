@@ -3,8 +3,6 @@ from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles
 import random
 
-PERIOD = 10
-
 async def reset(dut):
     dut.reset <= 1
 
