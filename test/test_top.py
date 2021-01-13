@@ -19,8 +19,7 @@ async def reset(dut):
     dut.reset <= 0;
     await ClockCycles(dut.clk, 5) # how long to wait for the debouncers to clear
 
-async def run_encoder_test(encoder, dut_enc):
-    max_count = 255
+async def run_encoder_test(encoder, dut_enc, max_count):
     for i in range(clocks_per_phase * 2 * max_count):
         await encoder.update(1)
 
@@ -50,9 +49,10 @@ async def test_all(dut):
     assert dut.pwm1_out == 0
 
     # do 3 ramps for each encoder 
-    await run_encoder_test(encoder0, dut.enc0)
-    await run_encoder_test(encoder1, dut.enc1)
-    await run_encoder_test(encoder2, dut.enc2)
+    max_count = 255
+    await run_encoder_test(encoder0, dut.enc0, max_count)
+    await run_encoder_test(encoder1, dut.enc1, max_count)
+    await run_encoder_test(encoder2, dut.enc2, max_count)
 
     # sync to pwm
     await RisingEdge(dut.pwm0_out)
