@@ -1,8 +1,8 @@
 `default_nettype none
 `timescale 1ns/1ns
 module top (
-    input clk12,
-    input reset_n,
+    input clk,
+    input reset,
     input enc0_a,
     input enc0_b,
     input enc1_a,
