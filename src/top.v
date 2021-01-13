@@ -2,7 +2,7 @@
 `timescale 1ns/1ns
 module top (
     input clk,
-    input reset_n,
+    input reset,
     input enc0_a,
     input enc0_b,
     input enc1_a,
@@ -13,8 +13,6 @@ module top (
     output pwm1_out,
     output pwm2_out
 );
-    wire reset = !reset_n;
-
     wire enc0_a_db, enc0_b_db;
     wire enc1_a_db, enc1_b_db;
     wire enc2_a_db, enc2_b_db;
