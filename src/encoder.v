@@ -41,4 +41,11 @@ module encoder #(
         end
     end
 
+    `ifdef FORMAL
+    initial assume(reset);
+    always @(posedge clk)
+        if(!reset)
+            cover(value == 5);
+    `endif
+
 endmodule

@@ -1,0 +1,12 @@
+[options]
+mode cover
+
+[engines]
+smtbmc
+
+[script]
+read -formal encoder.v
+prep -top encoder
+
+[files]
+src/encoder.v

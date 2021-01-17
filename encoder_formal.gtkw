@@ -1,0 +1,28 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Sun Jan 17 17:43:56 2021
+[*]
+[dumpfile] "/home/matt/work/asic-workshop/project2.1/encoder/engine_0/trace0.vcd"
+[dumpfile_mtime] "Sun Jan 17 17:43:03 2021"
+[dumpfile_size] 607
+[savefile] "/home/matt/work/asic-workshop/project2.1/encoder_formal.gtkw"
+[timestart] 0
+[size] 1490 774
+[pos] -1 -1
+*-2.788246 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 263
+[signals_width] 180
+[sst_expanded] 1
+[sst_vpaned_height] 206
+@28
+smt_clock
+@29
+encoder.reset
+@28
+encoder.a
+encoder.b
+encoder.clk
+@24
+encoder.value[7:0]
+[pattern_trace] 1
+[pattern_trace] 0
