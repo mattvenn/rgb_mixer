@@ -12,6 +12,9 @@ export COCOTB_REDUCED_LOG_FMT=1
 all: test_encoder test_debounce test_pwm test_rgb_mixer
 
 # if you run rules with NOASSERT=1 it will set PYTHONOPTIMIZE, which turns off assertions in the tests
+test_top:
+	echo "the top module was renamed to rgb_mixer. Please run make test_rgb_mixer instead"
+
 test_rgb_mixer:
 	rm -rf sim_build/
 	mkdir sim_build/
