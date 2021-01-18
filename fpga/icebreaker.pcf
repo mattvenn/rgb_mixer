@@ -1,12 +1,12 @@
 # 12 MHz clock
-set_io -nowarn clk12      35
+set_io -nowarn clk        35
 
 # RS232
 set_io -nowarn RX          6
 set_io -nowarn TX          9
 
 # LEDs and Button
-set_io -nowarn reset_n    10
+set_io -nowarn reset      10
 set_io -nowarn LEDR_N     11
 set_io -nowarn LEDG_N     37
 

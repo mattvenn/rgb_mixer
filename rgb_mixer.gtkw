@@ -2,40 +2,40 @@
 [*] GTKWave Analyzer v3.3.108 (w)1999-2020 BSI
 [*] Tue Jan 12 15:32:27 2021
 [*]
-[dumpfile] "/home/matt/work/asic-workshop/project2.1/top.vcd"
+[dumpfile] "/home/matt/work/asic-workshop/project2.1/rgb_mixer.vcd"
 [dumpfile_mtime] "Tue Jan 12 15:31:24 2021"
 [dumpfile_size] 1115760
-[savefile] "/home/matt/work/asic-workshop/project2.1/top.gtkw"
+[savefile] "/home/matt/work/asic-workshop/project2.1/rgb_mixer.gtkw"
 [timestart] 0
 [size] 1200 1529
 [pos] -1 -1
 *-26.465410 86220000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
-[treeopen] top.
+[treeopen] rgb_mixer.
 [sst_width] 272
 [signals_width] 398
 [sst_expanded] 1
 [sst_vpaned_height] 475
 @28
-top.clk
-top.reset_n
-top.reset
+rgb_mixer.clk
+rgb_mixer.reset_n
+rgb_mixer.reset
 @200
 -
 @28
-top.enc0_a
+rgb_mixer.enc0_a
 @29
-top.enc0_b
+rgb_mixer.enc0_b
 @200
 -
 @8024
-top.enc0[7:0]
-top.enc1[7:0]
-top.enc2[7:0]
+rgb_mixer.enc0[7:0]
+rgb_mixer.enc1[7:0]
+rgb_mixer.enc2[7:0]
 @200
 -
 @28
-top.pwm0_out
-top.pwm1_out
-top.pwm2_out
+rgb_mixer.pwm0_out
+rgb_mixer.pwm1_out
+rgb_mixer.pwm2_out
 [pattern_trace] 1
 [pattern_trace] 0
