@@ -8,6 +8,7 @@ SEED = 1
 
 # COCOTB variables
 export COCOTB_REDUCED_LOG_FMT=1
+export PYTHONPATH := test:$(PYTHONPATH)
 
 all: test_encoder test_debounce test_pwm test_rgb_mixer
 
