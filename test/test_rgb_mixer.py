@@ -27,12 +27,18 @@ async def run_encoder_test(encoder, dut_enc, max_count):
     
     assert(dut_enc == max_count)
 
+async def until_signal_has_value(clk, sig, value):
+    while True:
+        await RisingEdge(clk)
+        if sig.value == value:
+            return
+
 @cocotb.test()
 async def test_all(dut):
     clock = Clock(dut.clk, 10, units="us")
     encoders = []
     for i in range(num_encoders):
-        encoders.append(Encoder(dut.clk, dut.enc_a[0], dut.enc_b[0], clocks_per_phase = clocks_per_phase, noise_cycles = clocks_per_phase / 4))
+        encoders.append(Encoder(dut.clk, dut.enc_a[i], dut.enc_b[i], clocks_per_phase = clocks_per_phase, noise_cycles = clocks_per_phase / 4))
 
     cocotb.fork(clock.start())
 
@@ -49,11 +55,12 @@ async def test_all(dut):
     for i in range(num_encoders):
         await run_encoder_test(encoders[i], dut.enc[i], max_count)
 
-    # sync to pwm
+    # sync to pwm - can't wait on a bit of a bus, so have to do this manually
+    await until_signal_has_value(dut.clk, dut.pwm_out[0], 0)
+    await until_signal_has_value(dut.clk, dut.pwm_out[0], 1)
 
-    await RisingEdge(dut.pwm_out[0])
     # pwm should all be on for max_count 
     for i in range(max_count):
-        for i in range(num_encoders):
-            assert dut.pwm_out[i] == 1
+        for j in range(num_encoders):
+            assert dut.pwm_out[j] == 1
         await ClockCycles(dut.clk, 1)

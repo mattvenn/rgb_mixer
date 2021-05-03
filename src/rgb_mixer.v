@@ -8,7 +8,7 @@ module rgb_mixer #(
     input [NUM_LEDS-1:0] enc_b,
     output [NUM_LEDS-1:0] pwm_out
 );
-    wire [NUM_LEDS-1:0][7:0] enc;
+    wire [7:0] enc [NUM_LEDS-1:0];
     wire [NUM_LEDS-1:0] enc_a_debounced, enc_b_debounced;
 
     genvar i;
