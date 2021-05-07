@@ -1,6 +1,6 @@
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles
+from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles, ReadWrite
 import random
 from test_encoder import Encoder
 
@@ -52,7 +52,9 @@ async def test_all(dut):
     await run_encoder_test(encoder2, max_count)
 
     # sync to pwm
-    await RisingEdge(dut.pwm2_out)
+    await RisingEdge(dut.pwm0_out)
+    await ClockCycles(dut.clk, 1)
+
     # pwm should all be on for max_count 
     for i in range(max_count): 
         assert dut.pwm0_out == 1

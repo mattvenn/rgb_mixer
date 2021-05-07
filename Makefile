@@ -10,7 +10,7 @@ SEED = 1
 export COCOTB_REDUCED_LOG_FMT=1
 export PYTHONPATH := test:$(PYTHONPATH)
 
-all: test_encoder test_debounce test_pwm test_rgb_mixer
+all: test_encoder test_debounce test_pwm test_rgb_mixer test_gate_level
 
 # if you run rules with NOASSERT=1 it will set PYTHONOPTIMIZE, which turns off assertions in the tests
 test_rgb_mixer:
@@ -41,7 +41,7 @@ test_gate_level:
 	rm -rf sim_build/
 	mkdir sim_build/
 	iverilog -o sim_build/sim.vvp -s rgb_mixer -s dump -g2012 gl/rgb_mixer.lvs.powered.v test/dump_rgb_mixer.v -I $(PDK_ROOT)/sky130A
-	PYTHONOPTIMIZE=${NOASSERT} MODULE=test.test_rgb_mixer vvp -M $$(cocotb-config --prefix)/cocotb/libs -m libcocotbvpi_icarus sim_build/sim.vvp
+	PYTHONOPTIMIZE=${NOASSERT} MODULE=test.test_gl vvp -M $$(cocotb-config --prefix)/cocotb/libs -m libcocotbvpi_icarus sim_build/sim.vvp
 
 show_%: %.vcd %.gtkw
 	gtkwave $^

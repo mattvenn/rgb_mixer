@@ -21,8 +21,8 @@ async def test_pwm(dut):
 
         await reset(dut)
 
-        # wait pwm level clock steps
-        await ClockCycles(dut.clk, i)
+        # wait pwm level clock steps (+1 because output is registered)
+        await ClockCycles(dut.clk, i+1)
 
         # assert still high
         assert(dut.out)
