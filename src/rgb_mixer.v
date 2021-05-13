@@ -1,6 +1,16 @@
 `default_nettype none
 `timescale 1ns/1ns
 module rgb_mixer (
+`ifdef USE_POWER_PINS
+    inout vdda1,	// User area 1 3.3V supply
+    inout vdda2,	// User area 2 3.3V supply
+    inout vssa1,	// User area 1 analog ground
+    inout vssa2,	// User area 2 analog ground
+    inout vccd1,	// User area 1 1.8V supply
+    inout vccd2,	// User area 2 1.8v supply
+    inout vssd1,	// User area 1 digital ground
+    inout vssd2,	// User area 2 digital ground
+`endif
     input clk,
     input reset,
     input enc0_a,
@@ -11,12 +21,22 @@ module rgb_mixer (
     input enc2_b,
     output pwm0_out,
     output pwm1_out,
-    output pwm2_out
+    output pwm2_out,
+
+    output out_en_b0,
+    output out_en_b1,
+    output out_en_b2
+
 );
     wire enc0_a_db, enc0_b_db;
     wire enc1_a_db, enc1_b_db;
     wire enc2_a_db, enc2_b_db;
     wire [7:0] enc0, enc1, enc2;
+
+    // always enable output
+    assign out_en_b0 = 0;
+    assign out_en_b1 = 0;
+    assign out_en_b2 = 0;
 
     // debouncers, 2 for each encoder
     debounce #(.HIST_LEN(8)) debounce0_a(.clk(clk), .reset(reset), .button(enc0_a), .debounced(enc0_a_db));
