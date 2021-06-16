@@ -56,6 +56,8 @@ async def test_all(dut):
 
     # sync to pwm
     await RisingEdge(dut.pwm0_out)
+    await ClockCycles(dut.clk, 1)
+
     # pwm should all be on for max_count 
     for i in range(max_count): 
         assert dut.pwm0_out == 1
