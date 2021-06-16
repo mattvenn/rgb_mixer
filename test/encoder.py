@@ -12,6 +12,9 @@ class Encoder():
         self.a = a
         self.b = b
 
+        self.a <= 0
+        self.b <= 0
+
         # internals
         self.cycle = 0
         self.clocks_per_phase = clocks_per_phase
