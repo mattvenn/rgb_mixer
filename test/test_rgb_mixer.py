@@ -39,9 +39,9 @@ async def test_all(dut):
     cocotb.fork(clock.start())
 
     await reset(dut)
-    assert dut.enc0 == 0
-    assert dut.enc1 == 0
-    assert dut.enc2 == 0
+    assert dut.enc[0] == 0
+    assert dut.enc[1] == 0
+    assert dut.enc[2] == 0
 
     # pwm should all be low at start
     assert dut.pwm0_out == 0
@@ -50,9 +50,9 @@ async def test_all(dut):
 
     # do 3 ramps for each encoder 
     max_count = 255
-    await run_encoder_test(encoder0, dut.enc0, max_count)
-    await run_encoder_test(encoder1, dut.enc1, max_count)
-    await run_encoder_test(encoder2, dut.enc2, max_count)
+    await run_encoder_test(encoder0, dut.enc[0], max_count)
+    await run_encoder_test(encoder1, dut.enc[1], max_count)
+    await run_encoder_test(encoder2, dut.enc[2], max_count)
 
     # sync to pwm
     await RisingEdge(dut.pwm0_out)
