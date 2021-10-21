@@ -4,12 +4,12 @@ from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles
 from encoder import Encoder
 
 async def reset(dut):
-    dut.a <= 0
-    dut.b <= 0
-    dut.reset <= 1
+    dut.a.value = 0
+    dut.b.value = 0
+    dut.reset.value = 1
 
     await ClockCycles(dut.clk, 5)
-    dut.reset <= 0;
+    dut.reset.value = 0;
     await ClockCycles(dut.clk, 5)
 
 
