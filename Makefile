@@ -9,6 +9,7 @@ SEED = 1
 # COCOTB variables
 export COCOTB_REDUCED_LOG_FMT=1
 export PYTHONPATH := test:$(PYTHONPATH)
+export LIBPYTHON_LOC=$(shell cocotb-config --libpython)
 
 all: test_encoder test_debounce test_pwm test_rgb_mixer test_gate_level
 
@@ -40,7 +41,7 @@ test_debounce:
 test_gate_level:
 	rm -rf sim_build/
 	mkdir sim_build/
-	iverilog -o sim_build/sim.vvp -s rgb_mixer -s dump -g2012 gl/rgb_mixer.lvs.powered.v test/dump_rgb_mixer.v -I $(PDK_ROOT)/sky130A
+	iverilog -o sim_build/sim.vvp -s rgb_mixer -s dump -g2012 gl/rgb_mixer.v test/dump_rgb_mixer.v -I $(PDK_ROOT)/sky130A
 	PYTHONOPTIMIZE=${NOASSERT} MODULE=test.test_gl vvp -M $$(cocotb-config --prefix)/cocotb/libs -m libcocotbvpi_icarus sim_build/sim.vvp
 
 show_%: %.vcd %.gtkw
