@@ -1,6 +1,10 @@
 `default_nettype none
 `timescale 1ns/1ns
 module rgb_mixer (
+`ifdef USE_POWER_PINS
+    inout vccd1,	// User area 1 3.3V supply
+    inout vssd1,	// User area 1 analog ground
+`endif
     input clk,
     input reset,
     input enc0_a,
@@ -11,8 +15,12 @@ module rgb_mixer (
     input enc2_b,
     output pwm0_out,
     output pwm1_out,
-    output pwm2_out
+    output pwm2_out,
+    output [3:0] io_oeb,
+    output sync
 );
+    assign io_oeb = 4'b0;
+    assign sync = reset;
     wire enc0_a_db, enc0_b_db;
     wire enc1_a_db, enc1_b_db;
     wire enc2_a_db, enc2_b_db;
