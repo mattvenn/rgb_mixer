@@ -12,6 +12,9 @@ class Encoder():
         self.a = a
         self.b = b
 
+        self.a.value = 0
+        self.b.value = 0
+
         # internals
         self.cycle = 0
         self.clocks_per_phase = clocks_per_phase
@@ -46,12 +49,12 @@ class Encoder():
             self.last_b_phase = self.b_phase
 
         # set encoder inputs
-        self.a <= Encoder.CYCLE[self.a_phase]
-        self.b <= Encoder.CYCLE[self.b_phase]
+        self.a.value = Encoder.CYCLE[self.a_phase]
+        self.b.value = Encoder.CYCLE[self.b_phase]
 
         # randomly generate noise at edges
         if (self.cycle - self.a_edge) < self.noise_cycles and random.random() < self.noise_chance:
-            self.a <= random.randint(0, 1)
+            self.a.value = random.randint(0, 1)
         if (self.cycle - self.b_edge) < self.noise_cycles and random.random() < self.noise_chance:
-            self.b <= random.randint(0, 1)
+            self.b.value = random.randint(0, 1)
 
