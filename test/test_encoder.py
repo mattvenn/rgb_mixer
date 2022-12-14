@@ -19,7 +19,7 @@ async def test_perfect_encoder(dut):
     clocks_per_phase = 5
     # no noise
     encoder = Encoder(dut.clk, dut.a, dut.b, clocks_per_phase = clocks_per_phase, noise_cycles = 0)
-    cocotb.fork(clock.start())
+    cocotb.start_soon(clock.start())
 
     await reset(dut)
     assert dut.value == 0
