@@ -1,0 +1,10 @@
+{
+    "DESIGN_NAME": "rgb_mixer",
+    "VERILOG_FILES": "dir::src/*.v",
+    "PL_TARGET_DENSITY": "0.4",
+    "FP_CORE_UTIL": "30",
+    "FP_SIZING": "absolute",
+    "DIE_AREA": "0 0 150 150",
+    "CLOCK_PERIOD": "10",
+    "CLOCK_PORT": "clk"
+}
