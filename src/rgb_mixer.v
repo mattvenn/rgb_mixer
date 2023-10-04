@@ -1,6 +1,10 @@
 `default_nettype none
 `timescale 1ns/1ns
 module rgb_mixer (
+	`ifdef USE_POWER_PINS
+         inout vccd1,	// User area 1 3.3V supply
+	 inout vssd1,	// User area 1 analog ground
+	 `endif
     input clk,
     input reset,
     input enc0_a,
@@ -11,31 +15,42 @@ module rgb_mixer (
     input enc2_b,
     output pwm0_out,
     output pwm1_out,
-    output pwm2_out
+    output pwm2_out,
+    output [3:0] io_oeb,
+    output sync
 );
     wire enc0_a_db, enc0_b_db;
     wire enc1_a_db, enc1_b_db;
     wire enc2_a_db, enc2_b_db;
+    assign io_oeb = 4'b0;
+    assign sync = reset;
     wire [7:0] enc0, enc1, enc2;
 
+    reg reset_sync;
+    always @(posedge clk or posedge reset)
+       if (reset)
+	    reset_sync <= 1'b1;
+       else
+	    reset_sync <= 1'b0;
+
     // debouncers, 2 for each encoder
-    debounce #(.HIST_LEN(8)) debounce0_a(.clk(clk), .reset(reset), .button(enc0_a), .debounced(enc0_a_db));
-    debounce #(.HIST_LEN(8)) debounce0_b(.clk(clk), .reset(reset), .button(enc0_b), .debounced(enc0_b_db));
+    debounce #(.HIST_LEN(8)) debounce0_a(.clk(clk), .reset(reset_sync), .button(enc0_a), .debounced(enc0_a_db));
+    debounce #(.HIST_LEN(8)) debounce0_b(.clk(clk), .reset(reset_sync), .button(enc0_b), .debounced(enc0_b_db));
 
-    debounce #(.HIST_LEN(8)) debounce1_a(.clk(clk), .reset(reset), .button(enc1_a), .debounced(enc1_a_db));
-    debounce #(.HIST_LEN(8)) debounce1_b(.clk(clk), .reset(reset), .button(enc1_b), .debounced(enc1_b_db));
+    debounce #(.HIST_LEN(8)) debounce1_a(.clk(clk), .reset(reset_sync), .button(enc1_a), .debounced(enc1_a_db));
+    debounce #(.HIST_LEN(8)) debounce1_b(.clk(clk), .reset(reset_sync), .button(enc1_b), .debounced(enc1_b_db));
 
-    debounce #(.HIST_LEN(8)) debounce2_a(.clk(clk), .reset(reset), .button(enc2_a), .debounced(enc2_a_db));
-    debounce #(.HIST_LEN(8)) debounce2_b(.clk(clk), .reset(reset), .button(enc2_b), .debounced(enc2_b_db));
+    debounce #(.HIST_LEN(8)) debounce2_a(.clk(clk), .reset(reset_sync), .button(enc2_a), .debounced(enc2_a_db));
+    debounce #(.HIST_LEN(8)) debounce2_b(.clk(clk), .reset(reset_sync), .button(enc2_b), .debounced(enc2_b_db));
 
     // encoders
-    encoder #(.WIDTH(8)) encoder0(.clk(clk), .reset(reset), .a(enc0_a_db), .b(enc0_b_db), .value(enc0));
-    encoder #(.WIDTH(8)) encoder1(.clk(clk), .reset(reset), .a(enc1_a_db), .b(enc1_b_db), .value(enc1));
-    encoder #(.WIDTH(8)) encoder2(.clk(clk), .reset(reset), .a(enc2_a_db), .b(enc2_b_db), .value(enc2));
+    encoder #(.WIDTH(8)) encoder0(.clk(clk), .reset(reset_sync), .a(enc0_a_db), .b(enc0_b_db), .value(enc0));
+    encoder #(.WIDTH(8)) encoder1(.clk(clk), .reset(reset_sync), .a(enc1_a_db), .b(enc1_b_db), .value(enc1));
+    encoder #(.WIDTH(8)) encoder2(.clk(clk), .reset(reset_sync), .a(enc2_a_db), .b(enc2_b_db), .value(enc2));
 
     // pwm modules
-    pwm #(.WIDTH(8)) pwm0(.clk(clk), .reset(reset), .out(pwm0_out), .level(enc0));
-    pwm #(.WIDTH(8)) pwm1(.clk(clk), .reset(reset), .out(pwm1_out), .level(enc1));
-    pwm #(.WIDTH(8)) pwm2(.clk(clk), .reset(reset), .out(pwm2_out), .level(enc2));
+    pwm #(.WIDTH(8)) pwm0(.clk(clk), .reset(reset_sync), .out(pwm0_out), .level(enc0));
+    pwm #(.WIDTH(8)) pwm1(.clk(clk), .reset(reset_sync), .out(pwm1_out), .level(enc1));
+    pwm #(.WIDTH(8)) pwm2(.clk(clk), .reset(reset_sync), .out(pwm2_out), .level(enc2));
 
 endmodule
