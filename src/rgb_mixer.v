@@ -16,13 +16,15 @@ module rgb_mixer (
     output pwm0_out,
     output pwm1_out,
     output pwm2_out,
-    output [3:0] io_oeb,
+    output [3:0] io_oeb_low,
+    output [5:0] io_oeb_high,
     output sync
 );
     wire enc0_a_db, enc0_b_db;
     wire enc1_a_db, enc1_b_db;
     wire enc2_a_db, enc2_b_db;
-    assign io_oeb = 4'b0;
+    assign io_oeb_low = 4'b0;
+    assign io_oeb_high = 6'b111111;
     assign sync = reset;
     wire [7:0] enc0, enc1, enc2;
 
