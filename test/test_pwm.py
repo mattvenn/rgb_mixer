@@ -28,6 +28,11 @@ async def test_pwm(dut):
             # assert high
             assert(dut.out)
 
+        # with registerd outputs, need to wait one more clock cycle
+        await RisingEdge(dut.clk)
+        assert(dut.out)
+
+        # now off
         for off in range(255-i):
             await RisingEdge(dut.clk)
 

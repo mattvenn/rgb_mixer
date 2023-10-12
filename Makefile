@@ -42,6 +42,14 @@ test_debounce:
 	PYTHONOPTIMIZE=${NOASSERT} MODULE=test.test_debounce vvp -M $$(cocotb-config --prefix)/cocotb/libs -m libcocotbvpi_icarus sim_build/sim.vvp
 	! grep failure results.xml
 
+test_gate_level:
+	rm -rf sim_build/
+	mkdir sim_build/
+	iverilog -o sim_build/sim.vvp -s rgb_mixer -s dump -g2012 gl/rgb_mixer.v test/dump_rgb_mixer.v -I $(PDK_ROOT)/sky130A
+	PYTHONOPTIMIZE=${NOASSERT} MODULE=test.test_gl vvp -M $$(cocotb-config --prefix)/cocotb/libs -m libcocotbvpi_icarus sim_build/sim.vvp
+	! grep failure results.xml
+
+
 show_%: %.vcd %.gtkw
 	gtkwave $^
 
