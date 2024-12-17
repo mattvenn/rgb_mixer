@@ -2,6 +2,11 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles
 import random
+import os
+if 'NOASSERT' in os.environ:
+    noassert = True
+else:
+    noassert = False
 
 async def reset(dut):
     dut.reset.value = 1
@@ -26,12 +31,14 @@ async def test_pwm(dut):
             await RisingEdge(dut.clk)
 
             # assert high
-            assert(dut.out)
+            if not noassert:
+                assert(dut.out.value)
 
         for off in range(255-i):
             await RisingEdge(dut.clk)
 
             # assert low
-            assert(dut.out == 0)
+            if not noassert:
+                assert(dut.out.value == 0)
 
         

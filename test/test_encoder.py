@@ -2,6 +2,11 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles
 from encoder import Encoder
+import os
+if 'NOASSERT' in os.environ:
+    noassert = True
+else:
+    noassert = False
 
 async def reset(dut):
     dut.a.value = 0
@@ -22,16 +27,19 @@ async def test_perfect_encoder(dut):
     cocotb.start_soon(clock.start())
 
     await reset(dut)
-    assert dut.value == 0
+    if not noassert:
+        assert int(dut.value.value) == 0
 
     # count up
     for i in range(clocks_per_phase * 2 *  255):
         await encoder.update(1)
 
-    assert(dut.value == 255)
+    if not noassert:
+        assert int(dut.value.value) == 255
 
     # count down
     for i in range(clocks_per_phase * 2 * 255):
         await encoder.update(-1)
 
-    assert(dut.value == 0)
+    if not noassert:
+        assert int(dut.value.value) == 0

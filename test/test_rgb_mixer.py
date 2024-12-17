@@ -3,6 +3,11 @@ from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles
 import random
 from test_encoder import Encoder
+import os
+if 'NOASSERT' in os.environ:
+    noassert = True
+else:
+    noassert = False
 
 clocks_per_phase = 10
 
@@ -27,7 +32,8 @@ async def run_encoder_test(encoder, dut_enc, max_count):
     for i in range(10):
         await encoder.update(0)
     
-    assert(dut_enc == max_count)
+    if not noassert:
+        assert(dut_enc.value == max_count)
 
 @cocotb.test()
 async def test_all(dut):
@@ -39,14 +45,16 @@ async def test_all(dut):
     cocotb.start_soon(clock.start())
 
     await reset(dut)
-    assert dut.enc0 == 0
-    assert dut.enc1 == 0
-    assert dut.enc2 == 0
+    if not noassert:
+        assert dut.enc0.value == 0
+        assert dut.enc1.value == 0
+        assert dut.enc2.value == 0
 
     # pwm should all be low at start
-    assert dut.pwm0_out == 0
-    assert dut.pwm1_out == 0
-    assert dut.pwm2_out == 0
+    if not noassert:
+        assert dut.pwm0_out.value == 0
+        assert dut.pwm1_out.value == 0
+        assert dut.pwm2_out.value == 0
 
     # do 3 ramps for each encoder 
     max_count = 255
@@ -59,7 +67,8 @@ async def test_all(dut):
     await FallingEdge(dut.clk)
     # pwm should all be on for max_count 
     for i in range(max_count): 
-        assert dut.pwm0_out == 1
-        assert dut.pwm1_out == 1
-        assert dut.pwm2_out == 1
+        if not noassert:
+            assert dut.pwm0_out.value == 1
+            assert dut.pwm1_out.value == 1
+            assert dut.pwm2_out.value == 1
         await ClockCycles(dut.clk, 1)

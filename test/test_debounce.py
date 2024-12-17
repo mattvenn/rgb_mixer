@@ -2,6 +2,11 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, ClockCycles
 import random
+import os
+if 'NOASSERT' in os.environ:
+    noassert = True
+else:
+    noassert = False
 
 class BouncingSwitch():
 
@@ -34,7 +39,8 @@ async def test_debouncer(dut):
     cocotb.start_soon(clock.start())
 
     await reset(dut)
-    assert dut.debounced.value == 0
+    if not noassert:
+        assert dut.debounced.value == 0
 
     # toggle button 10 times
     for i in range(10):
@@ -42,22 +48,26 @@ async def test_debouncer(dut):
         await switch.set(1)
 
         # assert still low
-        assert dut.debounced.value == 0
+        if not noassert:
+            assert dut.debounced.value == 0
 
         # wait 8 clock cycles (default history length in debounce.v) + 1 for register
         await ClockCycles(dut.clk,9) 
 
         # assert button is as set
-        assert dut.debounced.value == 1
+        if not noassert:
+            assert dut.debounced.value == 1
 
         # same for off
         await switch.set(0)
 
         # assert still high
-        assert dut.debounced.value == 1
+        if not noassert:
+            assert dut.debounced.value == 1
 
         # wait 8 clock cycles (default history length in debounce.v) + 1 for register
         await ClockCycles(dut.clk, 9)
 
-        assert dut.debounced.value == 0
+        if not noassert:
+            assert dut.debounced.value == 0
 
