@@ -1,0 +1,6 @@
+{
+    "DESIGN_NAME": "rgb_mixer",
+    "VERILOG_FILES": "dir::src/*.v",
+    "CLOCK_PORT": "clk",
+    "CLOCK_PERIOD": 20
+}
