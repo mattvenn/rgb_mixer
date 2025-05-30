@@ -13,6 +13,11 @@ export LIBPYTHON_LOC=$(shell cocotb-config --libpython)
 
 all: test_encoder test_debounce test_pwm test_rgb_mixer
 
+gds:
+	iic-pdk sky130A
+	openlane rgb_mixer.json
+	cp runs/*/final/gds/rgb_mixer.gds .
+
 # if you run rules with NOASSERT=1 it will set PYTHONOPTIMIZE, which turns off assertions in the tests
 test_rgb_mixer:
 	rm -rf sim_build/

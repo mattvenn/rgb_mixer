@@ -15,6 +15,6 @@ jobs:
         with:
           repo: mattvenn/rgb_mixer
           ref: openlane2
-          command: openlane rgb_mixer.json
-          artifact_file: runs/*/final/gds/rgb_mixer.gds
+          command: make gds
+          artifact_file: rgb_mixer.gds
 
