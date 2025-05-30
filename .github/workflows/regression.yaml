@@ -1,0 +1,20 @@
+name: Monthly Check
+
+on:
+  push:
+  schedule:
+    - cron: '0 8 1 * *'  # Run at 08:00 UTC on the 1st of every month
+  workflow_dispatch:
+
+jobs:
+  simulate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: mattvenn/z2a-course-regressions@main
+        with:
+          repo: mattvenn/rgb-mixer
+          ref: main
+          command: make test_pwm test_debounce test_encoder test_rgb_mixer
+          artifact_file: rgb_mixer.vcd
+
