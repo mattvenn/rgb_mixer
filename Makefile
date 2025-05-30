@@ -14,11 +14,8 @@ export LIBPYTHON_LOC=$(shell cocotb-config --libpython)
 all: test_encoder test_debounce test_pwm test_rgb_mixer
 
 gds:
-	export PDK_ROOT=/foss/pdks
-	export PDK=sky130A
-	export PDKPATH=/foss/pdks/sky130A
-	export STD_CELL_LIBRARY=sky130_fd_sc_hd
-	openlane --manual-pdk rgb_mixer.json
+	# all in one line so openlane gets the exports
+	PDK_ROOT=/foss/pdks PDK=sky130A PDKPATH=/foss/pdks/sky130A STD_CELL_LIBRARY=sky130_fd_sc_hd openlane --manual-pdk rgb_mixer.json
 	cp runs/*/final/gds/rgb_mixer.gds .
 
 # if you run rules with NOASSERT=1 it will set PYTHONOPTIMIZE, which turns off assertions in the tests
