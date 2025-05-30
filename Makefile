@@ -15,7 +15,7 @@ all: test_encoder test_debounce test_pwm test_rgb_mixer
 
 gds:
 	iic-pdk-script.sh sky130A
-	openlane rgb_mixer.json
+	openlane --manual-pdk rgb_mixer.json
 	cp runs/*/final/gds/rgb_mixer.gds .
 
 # if you run rules with NOASSERT=1 it will set PYTHONOPTIMIZE, which turns off assertions in the tests
