@@ -14,7 +14,10 @@ export LIBPYTHON_LOC=$(shell cocotb-config --libpython)
 all: test_encoder test_debounce test_pwm test_rgb_mixer
 
 gds:
-	iic-pdk-script.sh sky130A
+	export PDK_ROOT=/foss/pdks
+	export PDK=sky130A
+	export PDKPATH=/foss/pdks/sky130A
+	export STD_CELL_LIBRARY=sky130_fd_sc_hd
 	openlane --manual-pdk rgb_mixer.json
 	cp runs/*/final/gds/rgb_mixer.gds .
 
