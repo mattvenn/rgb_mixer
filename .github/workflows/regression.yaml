@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: mattvenn/z2a-course-regressions@main
         with:
-          repo: mattvenn/rgb-mixer
+          repo: mattvenn/rgb_mixer
           ref: main
           command: make test_pwm test_debounce test_encoder test_rgb_mixer
           artifact_file: rgb_mixer.vcd
