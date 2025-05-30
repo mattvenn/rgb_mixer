@@ -1,4 +1,4 @@
-name: Monthly Check
+name: Monthly Check Simulate
 
 on:
   push:

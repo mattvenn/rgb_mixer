@@ -1,4 +1,4 @@
-name: Monthly Check
+name: Monthly Check OpenLane
 
 on:
   push:
