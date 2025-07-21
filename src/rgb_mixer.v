@@ -21,8 +21,8 @@ module rgb_mixer (
     wire reset = ! reset_n;
     wire deb_strobe, pwm_strobe;
 
-    strobe_gen #(.WIDTH(12)) deb_strobe_gen(.clk(clk), .reset(reset), .out(deb_strobe));
-    strobe_gen #(.WIDTH(4))  pwm_strobe_gen(.clk(clk), .reset(reset), .out(pwm_strobe));
+    strobe_gen #(.WIDTH(12)) deb_strobe_gen(.clk(clk), .out(deb_strobe));
+    strobe_gen #(.WIDTH(4))  pwm_strobe_gen(.clk(clk), .out(pwm_strobe));
 
     // debouncers, 2 for each encoder
     debounce #(.HIST_LEN(8)) debounce0_a(.clk(clk), .reset(reset), .button(enc0_a), .debounced(enc0_a_db));

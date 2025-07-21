@@ -5,22 +5,17 @@ module strobe_gen #(
     parameter WIDTH = 8
     ) (
     input wire clk,
-    input wire reset,
-    output reg out
+    output wire out
     );
 
     reg [WIDTH-1:0] count;
+    assign out = count[WIDTH-1];
 
     always @(posedge clk) begin
-        if(reset) begin
+        if(count[WIDTH-1] == 1'b1) begin
             count <= 1'b0;
-            out <= 1'b0;
-        end else if(count[WIDTH-1] == 1'b1) begin
-            count <= 1'b0;
-            out <= 1'b1;
         end else begin
             count <= count + 1'b1;
-            out <= 1'b0;
         end
     end
 
