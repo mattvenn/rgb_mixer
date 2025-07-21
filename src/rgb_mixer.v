@@ -9,9 +9,6 @@ module rgb_mixer (
     input enc1_b,
     input enc2_a,
     input enc2_b,
-    output LEDG_N,
-    output LEDR_N,
-    output P1B4,
     output pwm0_out,
     output pwm1_out,
     output pwm2_out
