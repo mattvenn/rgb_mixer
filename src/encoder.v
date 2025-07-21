@@ -20,7 +20,7 @@ module encoder #(
 
             old_a <= 0;
             old_b <= 0;
-            value <= 8'd128;
+            value <= 0;
 
         end else if (strobe) begin
 
