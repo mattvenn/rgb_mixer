@@ -1,6 +1,6 @@
 # FPGA variables
 PROJECT = fpga/encoder_pwm
-SOURCES= src/rgb_mixer.v src/encoder.v src/debounce.v src/pwm.v src/clock_divider.v
+SOURCES= src/rgb_mixer.v src/encoder.v src/debounce.v src/pwm.v src/strobe_gen.v
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = fpga/icebreaker.pcf
 ICEBREAKER_PACKAGE = sg48
@@ -17,7 +17,7 @@ all: test_encoder test_debounce test_pwm test_rgb_mixer
 test_rgb_mixer:
 	rm -rf sim_build/
 	mkdir sim_build/
-	iverilog -o sim_build/sim.vvp -s rgb_mixer -s dump -g2012 src/rgb_mixer.v test/dump_rgb_mixer.v src/ src/encoder.v src/debounce.v src/pwm.v
+	iverilog -o sim_build/sim.vvp -s rgb_mixer -s dump -g2012 src/rgb_mixer.v test/dump_rgb_mixer.v src/ src/strobe_gen.v src/encoder.v src/debounce.v src/pwm.v
 	PYTHONOPTIMIZE=${NOASSERT} MODULE=test.test_rgb_mixer vvp -M $$(cocotb-config --prefix)/cocotb/libs -m libcocotbvpi_icarus sim_build/sim.vvp
 	! grep failure results.xml
 
