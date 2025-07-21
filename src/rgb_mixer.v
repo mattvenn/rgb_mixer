@@ -2,13 +2,16 @@
 `timescale 1ns/1ns
 module rgb_mixer (
     input clk,
-    input reset,
+    input reset_n,
     input enc0_a,
     input enc0_b,
     input enc1_a,
     input enc1_b,
     input enc2_a,
     input enc2_b,
+    output LEDG_N,
+    output LEDR_N,
+    output P1B4,
     output pwm0_out,
     output pwm1_out,
     output pwm2_out
@@ -17,6 +20,11 @@ module rgb_mixer (
     wire enc1_a_db, enc1_b_db;
     wire enc2_a_db, enc2_b_db;
     wire [7:0] enc0, enc1, enc2;
+
+    wire reset = ! reset_n;
+    wire debounce_strobe, pwm_strobe;
+    clock_divider #(.WIDTH(12)) clock_div_0(.clk(clk), .reset(reset), .out(debounce_strobe));
+    clock_divider #(.WIDTH(4)) clock_div_1(.clk(clk), .reset(reset), .out(pwm_strobe));
 
     // debouncers, 2 for each encoder
     debounce #(.HIST_LEN(8)) debounce0_a(.clk(clk), .reset(reset), .button(enc0_a), .debounced(enc0_a_db));
@@ -29,13 +37,13 @@ module rgb_mixer (
     debounce #(.HIST_LEN(8)) debounce2_b(.clk(clk), .reset(reset), .button(enc2_b), .debounced(enc2_b_db));
 
     // encoders
-    encoder #(.WIDTH(8)) encoder0(.clk(clk), .reset(reset), .a(enc0_a_db), .b(enc0_b_db), .value(enc0));
-    encoder #(.WIDTH(8)) encoder1(.clk(clk), .reset(reset), .a(enc1_a_db), .b(enc1_b_db), .value(enc1));
-    encoder #(.WIDTH(8)) encoder2(.clk(clk), .reset(reset), .a(enc2_a_db), .b(enc2_b_db), .value(enc2));
+    encoder #(.WIDTH(8)) encoder0(.clk(clk), .strobe(debounce_strobe), .reset(reset), .a(enc0_a_db), .b(enc0_b_db), .value(enc0));
+    encoder #(.WIDTH(8)) encoder1(.clk(clk), .strobe(debounce_strobe), .reset(reset), .a(enc1_a_db), .b(enc1_b_db), .value(enc1));
+    encoder #(.WIDTH(8)) encoder2(.clk(clk), .strobe(debounce_strobe), .reset(reset), .a(enc2_a_db), .b(enc2_b_db), .value(enc2));
 
     // pwm modules
-    pwm #(.WIDTH(8)) pwm0(.clk(clk), .reset(reset), .out(pwm0_out), .level(enc0));
-    pwm #(.WIDTH(8)) pwm1(.clk(clk), .reset(reset), .out(pwm1_out), .level(enc1));
-    pwm #(.WIDTH(8)) pwm2(.clk(clk), .reset(reset), .out(pwm2_out), .level(enc2));
+    pwm #(.WIDTH(8)) pwm0(.clk(clk), .strobe(pwm_strobe), .reset(reset), .out(pwm0_out), .level(enc0));
+    pwm #(.WIDTH(8)) pwm1(.clk(clk), .strobe(pwm_strobe), .reset(reset), .out(pwm1_out), .level(enc1));
+    pwm #(.WIDTH(8)) pwm2(.clk(clk), .strobe(pwm_strobe), .reset(reset), .out(pwm2_out), .level(enc2));
 
 endmodule

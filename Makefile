@@ -1,6 +1,6 @@
 # FPGA variables
 PROJECT = fpga/encoder_pwm
-SOURCES= src/rgb_mixer.v src/encoder.v src/debounce.v src/pwm.v
+SOURCES= src/rgb_mixer.v src/encoder.v src/debounce.v src/pwm.v src/clock_divider.v
 ICEBREAKER_DEVICE = up5k
 ICEBREAKER_PIN_DEF = fpga/icebreaker.pcf
 ICEBREAKER_PACKAGE = sg48
