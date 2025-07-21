@@ -13,6 +13,8 @@ async def reset(dut):
 async def test_pwm(dut):
     clock = Clock(dut.clk, 10, units="us")
     cocotb.start_soon(clock.start())
+    # set the strobe always high to keep the test short
+    dut.strobe.value = 1
     
     # test a range of values
     for i in range(10, 255, 20):
@@ -28,6 +30,11 @@ async def test_pwm(dut):
             # assert high
             assert(dut.out)
 
+        # with registerd outputs, need to wait one more clock cycle
+        await RisingEdge(dut.clk)
+        assert(dut.out)
+
+        # now off
         for off in range(255-i):
             await RisingEdge(dut.clk)
 

@@ -6,7 +6,6 @@ module encoder #(
 )(
     input clk,
     input reset,
-    input strobe,
     input a,
     input b,
     output reg [WIDTH-1:0] value
@@ -22,7 +21,7 @@ module encoder #(
             old_b <= 0;
             value <= 0;
 
-        end else if (strobe) begin
+        end else begin
 
             // last values
             old_a <= a;

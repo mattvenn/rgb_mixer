@@ -7,7 +7,7 @@ module pwm #(
     input wire clk,
     input wire reset,
     input wire strobe,
-    output wire out,
+    output reg out,
     input wire [WIDTH-1:0] level
     );
 
@@ -21,7 +21,7 @@ module pwm #(
             count <= count + 1'b1;
     end
 
-    assign out = reset ? 1'b0:
-        INVERT == 1'b0 ? pwm_on : ! pwm_on;
+    always @(posedge clk)
+        out <= reset ? 1'b0: INVERT == 1'b0 ? pwm_on : ! pwm_on;
 
 endmodule

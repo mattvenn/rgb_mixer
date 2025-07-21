@@ -32,6 +32,7 @@ async def test_debouncer(dut):
     clocks_per_phase = 10
     switch = BouncingSwitch(dut)
     cocotb.start_soon(clock.start())
+    dut.strobe.value = 1
 
     await reset(dut)
     assert dut.debounced.value == 0

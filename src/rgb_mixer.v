@@ -9,6 +9,8 @@ module rgb_mixer (
     input enc1_b,
     input enc2_a,
     input enc2_b,
+	output LEDR_N,
+	output LEDG_N,
     output pwm0_out,
     output pwm1_out,
     output pwm2_out
@@ -21,23 +23,25 @@ module rgb_mixer (
     wire reset = ! reset_n;
     wire deb_strobe, pwm_strobe;
 
-    strobe_gen #(.WIDTH(12)) deb_strobe_gen(.clk(clk), .out(deb_strobe));
+    strobe_gen #(.WIDTH(4)) deb_strobe_gen(.clk(clk), .out(deb_strobe));
     strobe_gen #(.WIDTH(4))  pwm_strobe_gen(.clk(clk), .out(pwm_strobe));
 
     // debouncers, 2 for each encoder
-    debounce #(.HIST_LEN(8)) debounce0_a(.clk(clk), .reset(reset), .button(enc0_a), .debounced(enc0_a_db));
-    debounce #(.HIST_LEN(8)) debounce0_b(.clk(clk), .reset(reset), .button(enc0_b), .debounced(enc0_b_db));
+    debounce #(.HIST_LEN(8)) debounce0_a(.clk(clk), .strobe(deb_strobe), .reset(reset), .button(enc0_a), .debounced(enc0_a_db));
+    debounce #(.HIST_LEN(8)) debounce0_b(.clk(clk), .strobe(deb_strobe), .reset(reset), .button(enc0_b), .debounced(enc0_b_db));
+    assign LEDR_N = enc0_a_db;
+    assign LEDG_N = enc0_b_db;
 
-    debounce #(.HIST_LEN(8)) debounce1_a(.clk(clk), .reset(reset), .button(enc1_a), .debounced(enc1_a_db));
-    debounce #(.HIST_LEN(8)) debounce1_b(.clk(clk), .reset(reset), .button(enc1_b), .debounced(enc1_b_db));
+    debounce #(.HIST_LEN(8)) debounce1_a(.clk(clk), .strobe(deb_strobe), .reset(reset), .button(enc1_a), .debounced(enc1_a_db));
+    debounce #(.HIST_LEN(8)) debounce1_b(.clk(clk), .strobe(deb_strobe), .reset(reset), .button(enc1_b), .debounced(enc1_b_db));
 
-    debounce #(.HIST_LEN(8)) debounce2_a(.clk(clk), .reset(reset), .button(enc2_a), .debounced(enc2_a_db));
-    debounce #(.HIST_LEN(8)) debounce2_b(.clk(clk), .reset(reset), .button(enc2_b), .debounced(enc2_b_db));
+    debounce #(.HIST_LEN(8)) debounce2_a(.clk(clk), .strobe(deb_strobe), .reset(reset), .button(enc2_a), .debounced(enc2_a_db));
+    debounce #(.HIST_LEN(8)) debounce2_b(.clk(clk), .strobe(deb_strobe), .reset(reset), .button(enc2_b), .debounced(enc2_b_db));
 
     // encoders
-    encoder #(.WIDTH(8)) encoder0(.clk(clk), .strobe(deb_strobe), .reset(reset), .a(enc0_a_db), .b(enc0_b_db), .value(enc0));
-    encoder #(.WIDTH(8)) encoder1(.clk(clk), .strobe(deb_strobe), .reset(reset), .a(enc1_a_db), .b(enc1_b_db), .value(enc1));
-    encoder #(.WIDTH(8)) encoder2(.clk(clk), .strobe(deb_strobe), .reset(reset), .a(enc2_a_db), .b(enc2_b_db), .value(enc2));
+    encoder #(.WIDTH(8)) encoder0(.clk(clk), .reset(reset), .a(enc0_a_db), .b(enc0_b_db), .value(enc0));
+    encoder #(.WIDTH(8)) encoder1(.clk(clk), .reset(reset), .a(enc1_a_db), .b(enc1_b_db), .value(enc1));
+    encoder #(.WIDTH(8)) encoder2(.clk(clk), .reset(reset), .a(enc2_a_db), .b(enc2_b_db), .value(enc2));
 
     // pwm modules
     pwm #(.WIDTH(8)) pwm0(.clk(clk), .strobe(pwm_strobe), .reset(reset), .out(pwm0_out), .level(enc0));
